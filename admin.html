@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Kontrol Paneli - Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-container admin-container">
+    
+    <!-- ADMIN LOGIN CARD -->
+    <div id="admin-login-card" class="glass-card">
+      <div class="header">
+        <div class="logo-icon" style="border-color: var(--accent-rose); color: var(--accent-rose); box-shadow: 4px 4px 0px rgba(239, 68, 68, 0.2);">
+          <i class="fa-solid fa-user-secret"></i>
+        </div>
+        <h1>Kontrol Terminali Girişi</h1>
+        <p>Merkezi veri denetimi için master şifreleme anahtarını girin</p>
+      </div>
+
+      <form id="form-admin-login" onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="admin-username">Kullanıcı Adı</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" id="admin-username" class="form-input" placeholder="Kullanıcı adınızı girin" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="admin-secret">Sistem Yetki Anahtarı (Şifre)</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-key input-icon"></i>
+            <input type="password" id="admin-secret" class="form-input" placeholder="Şifrenizi yazın" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" style="background: transparent; color: var(--accent-rose); border-color: var(--accent-rose); box-shadow: 4px 4px 0px var(--accent-rose);">
+          <span>Bağlantıyı Doğrula</span>
+          <i class="fa-solid fa-shield-halved"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- ADMIN PANEL DASHBOARD -->
+    <div id="admin-dashboard" class="hidden">
+      
+      <!-- HEADER -->
+      <div class="admin-header">
+        <div>
+          <h1 style="font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-terminal text-cyan"></i> ROOT KONTROL PANELİ
+          </h1>
+          <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Gelen tüm tünel aktarım isteklerini ve şifreleme anahtarlarını denetleyin</p>
+        </div>
+        <div class="admin-nav">
+          <button onclick="adminLogout()" class="btn-secondary" style="margin: 0; padding: 10px 16px;">
+            <i class="fa-solid fa-power-off"></i>
+            <span>Bağlantıyı Kapat</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN LAYOUT -->
+      <div class="admin-layout">
+        
+        <!-- LEFT COLUMN: REQUESTS LIST -->
+        <div class="admin-card">
+          <h2>
+            <span>Veri Enjeksiyon İstekleri</span>
+            <div class="admin-nav" id="status-filters" style="font-weight: normal;">
+              <button class="nav-tab active" onclick="filterRequests('all')">Tümü</button>
+              <button class="nav-tab" onclick="filterRequests('pending')">Bekleyenler</button>
+              <button class="nav-tab" onclick="filterRequests('approved')">Onaylananlar</button>
+            </div>
+          </h2>
+          
+          <div class="data-list" id="requests-list">
+            <!-- Dynamic request items go here -->
+            <div class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Sinyaller taranıyor...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: KEY MANAGEMENT -->
+        <div class="admin-card">
+          <h2>
+            <span>Yetkili Giriş Anahtarları</span>
+            <button onclick="generateNewKey()" class="btn-primary" style="padding: 8px 14px; font-size: 12px; width: auto; font-weight: 600; border-radius: 0; box-shadow: none;">
+              <i class="fa-solid fa-plus"></i> Root Key Üret
+            </button>
+          </h2>
+
+          <div style="margin-bottom: 16px; position: relative;">
+            <div class="input-wrapper">
+              <i class="fa-solid fa-terminal input-icon" style="font-size: 12px; left: 12px;"></i>
+              <input type="text" id="key-search" class="form-input" placeholder="Root Key sorgula..." oninput="searchKeys()" style="padding: 10px 12px 10px 36px; font-size: 12px; border-radius: 0;">
+            </div>
+          </div>
+          
+          <div class="data-list" id="keys-list" style="max-height: 400px;">
+            <!-- Dynamic key list items go here -->
+            <div class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Anahtarlar taranıyor...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Wrapper -->
+  <div id="toast" class="toast">
+    <span id="toast-text"></span>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

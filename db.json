@@ -1,0 +1,15 @@
+{
+  "adminUsername": "admin",
+  "adminPassword": "admin",
+  "keys": [
+    {
+      "key": "DEMO123",
+      "createdAt": "2026-06-15T00:00:00.000Z"
+    },
+    {
+      "key": "GAME777",
+      "createdAt": "2026-06-15T00:00:00.000Z"
+    }
+  ],
+  "requests": []
+}

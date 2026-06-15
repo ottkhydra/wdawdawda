@@ -1,0 +1,12 @@
+{
+  "name": "game-balance-deposit",
+  "version": "1.0.0",
+  "description": "Sleek mobile deposit site for game balance",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

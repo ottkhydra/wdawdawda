@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siber Aktarım Terminali - Bakiye Yükleme</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="glass-card">
+      
+      <!-- LOGO / HEADER -->
+      <div class="header">
+        <div class="logo-icon">
+          <i class="fa-solid fa-terminal"></i>
+        </div>
+        <h1 id="app-title">SİBER AKTARIM TERMİNALİ</h1>
+        <p id="app-subtitle">Güvenli veri tünelleme ve bakiye yükleme protokolü</p>
+      </div>
+
+      <!-- ==================== VIEW 1: LOGIN ==================== -->
+      <div id="view-login" class="view">
+        <form id="form-login" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="login-key">Erişim Kodlama Anahtarı (Root Key)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-code input-icon"></i>
+              <input type="text" id="login-key" class="form-input" placeholder="ROOT-KEY-XXXXX" required autocomplete="off">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">
+            <span>Bağlantıyı Başlat</span>
+            <i class="fa-solid fa-network-wired"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- ==================== VIEW 2: METHOD SELECTION ==================== -->
+      <div id="view-selection" class="view hidden">
+        <div class="option-grid">
+          
+          <!-- Bet Option (USDT TRC20) -->
+          <div class="option-card" onclick="selectMethod('bet')">
+            <div class="option-icon">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="option-info">
+              <div class="option-title">Bet Tüneli</div>
+              <div class="option-desc">USDT Protokolü (TRC20 Ağı)</div>
+            </div>
+            <div class="option-arrow">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+          <!-- Crypto Option (TRX) -->
+          <div class="option-card" onclick="selectMethod('crypto')">
+            <div class="option-icon">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div class="option-info">
+              <div class="option-title">Kripto Kanalları</div>
+              <div class="option-desc">Tron Protokolü (TRX Ağı)</div>
+            </div>
+            <div class="option-arrow">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+          <!-- IBAN Option -->
+          <div class="option-card" onclick="selectMethod('iban')">
+            <div class="option-icon">
+              <i class="fa-solid fa-server"></i>
+            </div>
+            <div class="option-info">
+              <div class="option-title">Banka Veri Tabanı</div>
+              <div class="option-desc">TR IBAN Enjeksiyonu (TL)</div>
+            </div>
+            <div class="option-arrow">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <button onclick="logout()" class="btn-secondary">
+          <i class="fa-solid fa-power-off"></i>
+          <span>Bağlantıyı Kes</span>
+        </button>
+      </div>
+
+      <!-- ==================== VIEW 3: BET FORM (USDT TRC20) ==================== -->
+      <div id="view-form-bet" class="view hidden">
+        <div class="back-btn-header" onclick="showView('selection')">
+          <i class="fa-solid fa-chevron-left"></i> Geri Dön
+        </div>
+        
+        <form id="form-bet" onsubmit="submitDeposit(event, 'bet')">
+          <div class="form-group">
+            <label class="form-label" for="bet-usdt-address">Gönderen USDT TRC20 Cüzdan Adresi</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-wallet input-icon"></i>
+              <input type="text" id="bet-usdt-address" class="form-input" placeholder="T ile başlayan TRC20 adresi" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hızlı Tutar Seçimi</label>
+            <div class="amount-selector" id="bet-amount-choices">
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 10)">10 USDT</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 50)">50 USDT</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 100)">100 USDT</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 250)">250 USDT</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 500)">500 USDT</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('bet', 1000)">1000 USDT</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="bet-amount">Aktarılacak Tutar (USDT)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-dollar-sign input-icon"></i>
+              <input type="number" id="bet-amount" class="form-input" placeholder="0.00" min="1" step="any" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span>Veriyi Ağa Gönder</span>
+            <i class="fa-solid fa-upload"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- ==================== VIEW 4: CRYPTO FORM (TRX) ==================== -->
+      <div id="view-form-crypto" class="view hidden">
+        <div class="back-btn-header" onclick="showView('selection')">
+          <i class="fa-solid fa-chevron-left"></i> Geri Dön
+        </div>
+        
+        <form id="form-crypto" onsubmit="submitDeposit(event, 'crypto')">
+          <div class="form-group">
+            <label class="form-label" for="crypto-trx-address">Gönderen TRX Cüzdan Adresi</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-wallet input-icon"></i>
+              <input type="text" id="crypto-trx-address" class="form-input" placeholder="T ile başlayan TRX adresi" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hızlı Tutar Seçimi</label>
+            <div class="amount-selector" id="crypto-amount-choices">
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 100)">100 TRX</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 500)">500 TRX</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 1000)">1000 TRX</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 5000)">5000 TRX</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 10000)">10000 TRX</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('crypto', 20000)">20000 TRX</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="crypto-amount">Aktarılacak Tutar (TRX)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-bolt input-icon"></i>
+              <input type="number" id="crypto-amount" class="form-input" placeholder="0.00" min="1" step="any" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span>Veriyi Ağa Gönder</span>
+            <i class="fa-solid fa-upload"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- ==================== VIEW 5: IBAN FORM (TL) ==================== -->
+      <div id="view-form-iban" class="view hidden">
+        <div class="back-btn-header" onclick="showView('selection')">
+          <i class="fa-solid fa-chevron-left"></i> Geri Dön
+        </div>
+        
+        <form id="form-iban" onsubmit="submitDeposit(event, 'iban')">
+          <div class="form-group">
+            <label class="form-label" for="iban-fullname">Gönderen Kimliği (Ad Soyad)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-fingerprint input-icon"></i>
+              <input type="text" id="iban-fullname" class="form-input" placeholder="Kimlik adı ve soyadı" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="iban-number">Kaynak IBAN Adresi (TR)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-file-invoice input-icon"></i>
+              <input type="text" id="iban-number" class="form-input" placeholder="TR00 0000 0000 0000 0000 0000 00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hızlı Tutar Seçimi</label>
+            <div class="amount-selector" id="iban-amount-choices">
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 500)">500 ₺</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 1000)">1000 ₺</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 2500)">2500 ₺</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 5000)">5000 ₺</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 10000)">10000 ₺</button>
+              <button type="button" class="amount-btn" onclick="setQuickAmount('iban', 20000)">20000 ₺</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="iban-amount">Aktarılacak Tutar (TL)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-turkish-lira-sign input-icon"></i>
+              <input type="number" id="iban-amount" class="form-input" placeholder="0.00" min="10" step="any" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span>Sinyali Onaya Gönder</span>
+            <i class="fa-solid fa-upload"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- ==================== VIEW 6: STATUS VIEW ==================== -->
+      <div id="view-status" class="view hidden">
+        <div class="status-wrapper">
+          
+          <!-- Pending State -->
+          <div id="status-pending-ui" class="status-content">
+            <div class="status-animation status-pending">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h2 class="status-title text-amber">Protokol Askıda</h2>
+            <p class="status-desc">Aktarım verileriniz ağ kontrol merkezine gönderildi. Sistem onayı bekleniyor. Bağlantıyı koparmayın, durum otomatik senkronize edilecektir.</p>
+          </div>
+
+          <!-- Approved State -->
+          <div id="status-approved-ui" class="status-content hidden">
+            <div class="status-animation status-approved">
+              <i class="fa-solid fa-terminal"></i>
+            </div>
+            <h2 class="status-title text-emerald">Enjeksiyon Başarılı</h2>
+            <p class="status-desc">Bakiye aktarım protokolü tamamlandı. Veri veri tabanına başarıyla işlendi ve bakiye hesaba eklendi.</p>
+            <button onclick="resetToSelection()" class="btn-primary" style="background: transparent; color: var(--accent-emerald); border-color: var(--accent-emerald); box-shadow: 4px 4px 0px var(--accent-emerald);">
+              <span>Yeni Protokol Başlat</span>
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+
+          <!-- Rejected State -->
+          <div id="status-rejected-ui" class="status-content hidden">
+            <div class="status-animation status-rejected">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2 class="status-title text-rose">Bağlantı Reddedildi</h2>
+            <p class="status-desc">Sinyal reddedildi. İletilen cüzdan imzaları veya aktarım tutarı doğrulanamadı. Lütfen girdilerinizi inceleyip yeniden deneyin.</p>
+            <button onclick="resetToSelection()" class="btn-primary" style="background: transparent; color: var(--accent-rose); border-color: var(--accent-rose); box-shadow: 4px 4px 0px var(--accent-rose);">
+              <span>Tekrar Dene</span>
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+
+          <!-- Request Details Summary Table -->
+          <div class="detail-table">
+            <div class="detail-row">
+              <span class="detail-label">TXID (İşlem ID):</span>
+              <span class="detail-value" id="status-req-id">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Protokol Yöntemi:</span>
+              <span class="detail-value" id="status-req-method">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Aktarılan Miktar:</span>
+              <span class="detail-value" id="status-req-amount">-</span>
+            </div>
+            <div id="status-req-details-row" class="detail-row">
+              <span class="detail-label" id="status-detail-label">Kaynak/Hedef:</span>
+              <span class="detail-value" id="status-req-address">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Zaman Damgası:</span>
+              <span class="detail-value" id="status-req-date">-</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Wrapper -->
+  <div id="toast" class="toast">
+    <span id="toast-text"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
